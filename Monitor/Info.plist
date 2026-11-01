@@ -11,7 +11,5 @@
 	<array>
 		<string>_rtsp._tcp</string>
 	</array>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>Precisamos acessar a rede local.</string>
 </dict>
 </plist>

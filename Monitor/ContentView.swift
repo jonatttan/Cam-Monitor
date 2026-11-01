@@ -10,26 +10,48 @@ import SwiftUI
 struct ContentView: View {
     @State private var isLoading = true
     let streamURL = "rtsp://admin:passcode321@192.168.2.112:554/onvif1"
+//    private lazy var playerView: VLCPlayerView = {
+//        VLCPlayerView(url: streamURL,showLoading: $isLoading)
+//    }()
     
     var body: some View {
         ZStack {
-            VLCPlayerView(url: streamURL)
+            VLCPlayerView(url: streamURL, showLoading: $isLoading)
                 .ignoresSafeArea()
+                .overlay {
+                    if isLoading {
+                        VStack(spacing: 12) {
+                            ProgressView()
+                                .scaleEffect(1.5)
+                            Text("Conectando à câmera...")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+//                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+//                        .background(Color.black.opacity(0.35))
+//                        .transition(.opacity)
+                    }
+                }
+                .animation(.easeOut(duration: 0.2), value: isLoading)
             
-            if isLoading {
-                VStack(spacing: 12) {
-                    ProgressView()
-                        .scaleEffect(1.5)
-                    Text("Conectando à câmera...")
-                        .font(.caption)
-                        .foregroundColor(.gray)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.black.opacity(0.5))
-                .onReceive(Timer.publish(every: 5, on: .main, in: .common).autoconnect()) { _ in
-                    isLoading = false
-                }
-            }
+//            if isLoading {
+//                VStack(spacing: 12) {
+//                    ProgressView()
+//                        .scaleEffect(1.5)
+//                    Text("Conectando à câmera...")
+//                        .font(.caption)
+//                        .foregroundColor(.white)
+//                }
+//                .frame(maxWidth: .infinity, maxHeight: .infinity)
+//                .background(Color.black.opacity(0.5))
+//                .onReceive(Timer.publish(every: 5, on: .main, in: .common).autoconnect()) { _ in
+//                    isLoading = false
+//                }
+//            }
+//            else {
+//                self.playerView
+//                    .ignoresSafeArea()
+//            }
         }
     }
 }
