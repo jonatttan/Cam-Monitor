@@ -40,7 +40,7 @@ final class VLCPlaybackService: NSObject, ObservableObject {
         stop()
         activeURL = url
 
-        guard let url = URL(string: url), let media = VLCMedia(url: url) else {
+        guard let mediaURL = URL(string: url), let media = VLCMedia(url: mediaURL) else {
             state = .failed
             return
         }
@@ -55,7 +55,7 @@ final class VLCPlaybackService: NSObject, ObservableObject {
     func stop() {
         firstFrameTask?.cancel()
         firstFrameTask = nil
-        if player.isPlaying {
+        if activeURL != nil {
             player.stop()
         }
         activeURL = nil
@@ -79,7 +79,10 @@ final class VLCPlaybackService: NSObject, ObservableObject {
 
 extension VLCPlaybackService: VLCMediaPlayerDelegate {
     func mediaPlayerStateChanged(_ newState: VLCMediaPlayerState) {
-        switch player.state {
+        // Ignore a late callback from the previous media after a camera switch.
+        guard newState == player.state else { return }
+
+        switch newState {
         case .opening:
             Task { @MainActor [weak self] in self?.state = .connecting }
         case .playing:
