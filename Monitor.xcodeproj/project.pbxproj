@@ -52,7 +52,6 @@
 			children = (
 				09AE3DE62F85509A00391EA1 /* Monitor */,
 				09AE3DE52F85509A00391EA1 /* Products */,
-				BDFFDFE012DFC4485FE515B1 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -62,13 +61,6 @@
 				09AE3DE42F85509A00391EA1 /* Monitor.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		BDFFDFE012DFC4485FE515B1 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

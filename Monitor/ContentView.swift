@@ -1,28 +1,21 @@
-//
-//  ContentView.swift
-//  Monitor
-//
-//  Created by Jonattan Sousa on 07/04/26.
-//
-
 import SwiftUI
 
 struct ContentView: View {
-    @State private var isLoading = true
+    @StateObject private var viewModel = CameraViewModel()
     let streamURL = "rtsp://admin:passcode321@192.168.2.112:554/onvif1"
-    
+
     var body: some View {
         ZStack {
-            VLCPlayerView(url: streamURL, showLoading: $isLoading)
-                .opacity(isLoading ? 0 : 1)
-                .animation(.easeIn(duration: 0.25), value: isLoading)
+            VLCPlayerView(playbackService: viewModel.playbackService)
+                .opacity(viewModel.isLoading || viewModel.hasPlaybackError ? 0 : 1)
+                .animation(.easeIn(duration: 0.25), value: viewModel.isLoading || viewModel.hasPlaybackError)
                 .ignoresSafeArea()
                 .overlay {
-                    if isLoading {
+                    if viewModel.isLoading || viewModel.hasPlaybackError {
                         VStack(spacing: 12) {
                             ProgressView()
                                 .scaleEffect(1.5)
-                            Text("Conectando à câmera...")
+                            Text(viewModel.hasPlaybackError ? "Não foi possível conectar" : "Conectando à câmera...")
                                 .font(.title)
                                 .foregroundColor(.gray)
                         }
@@ -31,8 +24,9 @@ struct ContentView: View {
                         .transition(.opacity)
                     }
                 }
-                .animation(.easeOut(duration: 0.5), value: isLoading)
+                .animation(.easeOut(duration: 0.5), value: viewModel.isLoading || viewModel.hasPlaybackError)
         }
+        .onAppear { viewModel.start(url: streamURL) }
     }
 }
 
