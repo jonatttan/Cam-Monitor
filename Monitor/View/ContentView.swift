@@ -1,3 +1,10 @@
+//
+//  ContentView.swift
+//  Monitor
+//
+//  Created by Jonattan Sousa on 02/11/26.
+//
+
 import SwiftUI
 
 private enum AppTab: Hashable {
@@ -6,12 +13,21 @@ private enum AppTab: Hashable {
 }
 
 struct ContentView: View {
-    @StateObject private var viewModel = CameraViewModel()
+    @StateObject private var cameraStore: CameraStore
+    @StateObject private var homeViewModel: CameraViewModel
+    @StateObject private var settingsViewModel: CameraSettingsViewModel
     @State private var selectedTab: AppTab = .home
+
+    init() {
+        let store = CameraStore(repository: KeychainCameraRepository())
+        _cameraStore = StateObject(wrappedValue: store)
+        _homeViewModel = StateObject(wrappedValue: CameraViewModel(cameraStore: store))
+        _settingsViewModel = StateObject(wrappedValue: CameraSettingsViewModel(cameraStore: store))
+    }
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            HomeView(viewModel: viewModel) {
+            HomeView(viewModel: homeViewModel) {
                 selectedTab = .settings
             }
             .tabItem {
@@ -19,7 +35,7 @@ struct ContentView: View {
             }
             .tag(AppTab.home)
 
-            SettingsPlaceholderView()
+            SettingsView(viewModel: settingsViewModel)
                 .tabItem {
                     Label("Ajustes", systemImage: "gearshape")
                 }
@@ -28,6 +44,7 @@ struct ContentView: View {
         .tint(AppColors.primary)
         .toolbarBackground(.visible, for: .tabBar)
         .toolbarBackground(.regularMaterial, for: .tabBar)
+        .task { cameraStore.load() }
     }
 }
 
@@ -48,6 +65,9 @@ private struct HomeView: View {
         }
         .background(AppColors.background.ignoresSafeArea())
         .onAppear(perform: viewModel.startInitialCameraIfNeeded)
+        .onChange(of: viewModel.cameras) { _, _ in
+            viewModel.startInitialCameraIfNeeded()
+        }
     }
 
     private var header: some View {
@@ -244,21 +264,6 @@ private struct CameraRow: View {
         .buttonStyle(.plain)
         .accessibilityLabel("\(camera.name), \(camera.ipAddress), \(status.title)")
         .accessibilityAddTraits(isSelected ? .isSelected : [])
-    }
-}
-
-private struct SettingsPlaceholderView: View {
-    var body: some View {
-        NavigationStack {
-            ContentUnavailableView(
-                "Configurações",
-                systemImage: "gearshape",
-                description: Text("O cadastro e o armazenamento seguro das câmeras serão adicionados na próxima etapa.")
-            )
-            .navigationTitle("Ajustes")
-            .navigationBarTitleDisplayMode(.inline)
-            .background(AppColors.background)
-        }
     }
 }
 

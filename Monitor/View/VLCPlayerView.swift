@@ -1,3 +1,10 @@
+//
+//  VLCPlayerView.swift
+//  Monitor
+//
+//  Created by Jonattan Sousa on 02/11/26.
+//
+
 import SwiftUI
 import VLCKit
 

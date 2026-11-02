@@ -1,3 +1,10 @@
+//
+//  VLCPlaybackService.swift
+//  Monitor
+//
+//  Created by Jonattan Sousa on 02/11/26.
+//
+
 import Combine
 import Foundation
 import UIKit
