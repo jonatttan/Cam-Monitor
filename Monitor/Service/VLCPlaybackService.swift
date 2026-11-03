@@ -11,7 +11,7 @@ import UIKit
 import VLCKit
 
 /// Holds the single VLC player used by the app and publishes playback state to the UI.
-final class VLCPlaybackService: NSObject, ObservableObject {
+final class VLCPlaybackService: NSObject, ObservableObject, CameraPlaybackServicing {
     enum State: Equatable {
         case idle
         case connecting
@@ -20,6 +20,7 @@ final class VLCPlaybackService: NSObject, ObservableObject {
     }
 
     @Published private(set) var state: State = .idle
+    var statePublisher: AnyPublisher<State, Never> { $state.eraseToAnyPublisher() }
 
     let player = VLCMediaPlayer()
     private var firstFrameTask: Task<Void, Never>?

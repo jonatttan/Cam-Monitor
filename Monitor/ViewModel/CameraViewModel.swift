@@ -15,12 +15,12 @@ final class CameraViewModel: ObservableObject {
     @Published private(set) var cameras: [Camera]
     @Published private(set) var selectedCameraID: Camera.ID?
 
-    let playbackService: VLCPlaybackService
+    let playbackService: CameraPlaybackServicing
     private let cameraStore: CameraStore
     private var cancellables = Set<AnyCancellable>()
     private var hasStartedInitialCamera = false
 
-    init(cameraStore: CameraStore, playbackService: VLCPlaybackService = VLCPlaybackService()) {
+    init(cameraStore: CameraStore, playbackService: CameraPlaybackServicing = VLCPlaybackService()) {
         self.cameraStore = cameraStore
         self.playbackService = playbackService
         self.cameras = cameraStore.cameras
@@ -40,7 +40,7 @@ final class CameraViewModel: ObservableObject {
             }
             .store(in: &cancellables)
 
-        playbackService.$state
+        playbackService.statePublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
                 self?.isLoading = state == .connecting

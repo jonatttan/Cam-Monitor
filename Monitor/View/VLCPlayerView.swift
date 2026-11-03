@@ -9,7 +9,7 @@ import SwiftUI
 import VLCKit
 
 struct VLCPlayerView: UIViewRepresentable {
-    let playbackService: VLCPlaybackService
+    let playbackService: CameraPlaybackServicing
 
     func makeUIView(context: Context) -> UIView {
         let view = UIView(frame: .zero)
@@ -31,9 +31,9 @@ struct VLCPlayerView: UIViewRepresentable {
 }
 
 final class PlayerViewCoordinator {
-    let playbackService: VLCPlaybackService
+    let playbackService: CameraPlaybackServicing
 
-    init(playbackService: VLCPlaybackService) {
+    init(playbackService: CameraPlaybackServicing) {
         self.playbackService = playbackService
     }
 }
