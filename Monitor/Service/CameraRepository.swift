@@ -14,8 +14,16 @@ protocol CameraRepository {
 }
 
 final class KeychainCameraRepository: CameraRepository {
-    private let service = Bundle.main.bundleIdentifier ?? "com.jonattan.Monitor"
-    private let account = "registered-cameras.v1"
+    private let service: String
+    private let account: String
+
+    init(
+        service: String = Bundle.main.bundleIdentifier ?? "com.jonattan.Monitor",
+        account: String = "registered-cameras.v1"
+    ) {
+        self.service = service
+        self.account = account
+    }
 
     func fetchCameras() throws -> [Camera] {
         var query = baseQuery
